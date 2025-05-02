@@ -1,0 +1,19 @@
+currency:
+  api:
+    url: https://openexchangerates.org
+    currency-path: /api/currencies.json
+    exchange-path: /api/latest.json
+    app-id: 10af5eea4e9d49ba94ca8ac719b16c98
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/your_db
+    username: your_user
+    password: your_password
+  jpa:
+    hibernate:
+      ddl-auto: none
+  redis:
+    host: localhost
+    port: 6379
+  flyway:
+    enabled: true
