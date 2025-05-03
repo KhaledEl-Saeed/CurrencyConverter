@@ -52,7 +52,7 @@ public class CurrencyApiClient {
 
     }
 
-    public Mono<String> getLatestRates() {
+    public Mono<String> getLatestRates(String base) {
         return webClientBuilder
                 .baseUrl(apiUrl)
                 .build()
@@ -60,6 +60,7 @@ public class CurrencyApiClient {
                 .uri(uriBuilder -> uriBuilder
                         .path(exchangePath)
                         .queryParam("app_id", appId)
+                        .queryParam("base", base)
                         .build())
                 .retrieve()
                 .bodyToMono(String.class);

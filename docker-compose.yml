@@ -2,27 +2,6 @@
 version: '1.0'
 
 services:
-  currency-converter-app:
-    build:
-      context: .
-      dockerfile: dockerfile
-    container_name: currency_converter_container
-    depends_on:
-      db:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/currency_converter_db
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: P4ssword
-      SPRING_REDIS_HOST: redis
-      SPRING_REDIS_PORT: 6379
-    ports:
-      - "8080:8080"
-    networks:
-      - app_network
-
   db:
     image: postgres:15.0
     container_name: currency_converter_db_container
