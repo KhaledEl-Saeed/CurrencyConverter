@@ -1,19 +1,56 @@
+## API Configuration
 currency:
   api:
     url: https://openexchangerates.org
     currency-path: /api/currencies.json
     exchange-path: /api/latest.json
     app-id: 10af5eea4e9d49ba94ca8ac719b16c98
+
+## Spring Configuration
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/your_db
-    username: your_user
-    password: your_password
+    url: jdbc:postgresql://localhost:5432/currency_converter_db
+    username: postgres
+    password: P4ssword
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      connection-timeout: 30000
+      maximum-pool-size: 10
+
   jpa:
     hibernate:
-      ddl-auto: none
-  redis:
+      ddl-auto: none  # Important: let Flyway manage the schema
+      dialect: org.hibernate.dialect.PostgreSQLDialect
+    open-in-view: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        jdbc:
+          lob:
+            non_contextual_creation: true
+        id:
+          new_generator_mappings: true
+        format_sql: true
+    show-sql: true
+
+
+  docker:
+    compose:
+      lifecycle-management: start-only
+
+  cache:
+    type: redis
     host: localhost
     port: 6379
-  flyway:
-    enabled: true
+    redis:
+      time-to-live: 600000
+    cache-names:
+      - rates
+
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    org.springframework: DEBUG
+
+
