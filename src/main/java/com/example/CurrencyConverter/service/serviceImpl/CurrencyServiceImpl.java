@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
+import java.util.Objects;
 
 @Service
 public class CurrencyServiceImpl implements CurrencyService {
@@ -18,7 +19,12 @@ public class CurrencyServiceImpl implements CurrencyService {
     @Override
     public CurrencyResponse fetchCurrencies() {
         CurrencyResponse response = new CurrencyResponse();
-        response.setSuccess(true);
+
+        response.setStatus("success");
+        if (apiClient.getCurrencies() == null) {
+            response.setStatus("fail");
+            return response;
+        }
         response.setCurrencies(apiClient.getCurrencies());
         return response;
     }
