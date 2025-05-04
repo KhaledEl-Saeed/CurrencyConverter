@@ -36,7 +36,7 @@ public class CurrencyApiClient {
     public Map<String, String> getCurrencies() {
 
         return webClientBuilder
-                .baseUrl(apiUrl)  // 👈 This tells WebClient where to connect
+                .baseUrl(apiUrl)
                 .build()
                 .get()
                 .uri(uriBuilder -> uriBuilder

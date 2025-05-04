@@ -10,8 +10,14 @@ import org.mockito.MockitoAnnotations;
 
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 class CurrencyServiceImplTest {
 
@@ -28,14 +34,12 @@ class CurrencyServiceImplTest {
 
     @Test
     void testFetchCurrencies_Success() {
-        // Given
+
         Map<String, String> mockCurrencies = Map.of("USD", "United States Dollar", "EUR", "Euro");
         when(apiClient.getCurrencies()).thenReturn(mockCurrencies);
 
-        // When
         CurrencyResponse response = currencyService.fetchCurrencies();
 
-        // Then
         assertNotNull(response);
         assertEquals("success", response.getStatus());
         assertEquals(2, response.getCurrencies().size());
@@ -46,13 +50,11 @@ class CurrencyServiceImplTest {
 
     @Test
     void testFetchCurrencies_Failure_NullResponse() {
-        // Given
+
         when(apiClient.getCurrencies()).thenReturn(null);
 
-        // When
         CurrencyResponse response = currencyService.fetchCurrencies();
 
-        // Then
         assertNotNull(response);
         assertEquals("fail", response.getStatus());
         assertNull(response.getCurrencies());
@@ -62,13 +64,11 @@ class CurrencyServiceImplTest {
 
     @Test
     void testFetchCurrencies_EmptyMap() {
-        // Given
+
         when(apiClient.getCurrencies()).thenReturn(Map.of());
 
-        // When
         CurrencyResponse response = currencyService.fetchCurrencies();
 
-        // Then
         assertNotNull(response);
         assertEquals("success", response.getStatus());
         assertNotNull(response.getCurrencies());
@@ -79,10 +79,9 @@ class CurrencyServiceImplTest {
 
     @Test
     void testFetchCurrencies_ThrowsException() {
-        // Given
+
         when(apiClient.getCurrencies()).thenThrow(new RuntimeException("API failure"));
 
-        // When & Then
         RuntimeException thrown = assertThrows(RuntimeException.class, () -> {
             currencyService.fetchCurrencies();
         });

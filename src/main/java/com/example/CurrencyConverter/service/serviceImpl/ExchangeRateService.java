@@ -7,7 +7,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cache.annotation.Caching;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -45,7 +44,6 @@ public class ExchangeRateService {
     @Scheduled(fixedRate = 3600000)
     public void updateAllCurrencyRates() {
         String base = "USD";
-        log.info("Updating all currency rates");
 
         try {
             String json = currencyApiClient.getLatestRates(base).block();
@@ -56,19 +54,16 @@ public class ExchangeRateService {
             String baseCurrency = root.get("base").asText();
             JsonNode ratesNode = root.get("rates");
 
-            // Cache & DB Save for base USD
             String baseRatesJson = ratesNode.toString();
             saveRates(timestamp, baseCurrency, baseRatesJson);
             redisTemplate.opsForValue().set("latest_rates_" + baseCurrency, baseRatesJson);
 
-            // Convert and cache for each other currency based on USD
             Iterator<Map.Entry<String, JsonNode>> fields = ratesNode.fields();
             while (fields.hasNext()) {
                 Map.Entry<String, JsonNode> entry = fields.next();
                 String newBaseCurrency = entry.getKey();
                 BigDecimal newBaseRate = entry.getValue().decimalValue();
 
-                // Avoid dividing by zero or 1:1 for USD
                 if (newBaseRate.compareTo(BigDecimal.ZERO) == 0 || "USD".equalsIgnoreCase(newBaseCurrency)) {
                     continue;
                 }
@@ -84,13 +79,11 @@ public class ExchangeRateService {
                     convertedRates.put(currency, rateInNewBase);
                 }
 
-                convertedRates.put(newBaseCurrency, BigDecimal.ONE); // Ensure 1:1
+                convertedRates.put(newBaseCurrency, BigDecimal.ONE);
 
-                // Save to DB
                 String jsonRates = mapper.writeValueAsString(convertedRates);
                 saveRates(timestamp, newBaseCurrency, jsonRates);
 
-                // Cache
                 redisTemplate.opsForValue().set("latest_rates_" + newBaseCurrency, jsonRates);
             }
 

@@ -19,17 +19,15 @@ class CurrencyConvertorRepositoryTest {
     @Test
     @DisplayName("Given a new CurrencyConvertor, When saved, Then it should be retrievable by ID")
     void givenCurrencyConvertor_whenSaved_thenFindByIdReturnsIt() {
-        // Given
+
         CurrencyConvertor cc = new CurrencyConvertor();
         cc.setTimestamp(1714741280L);
         cc.setCurrency("USD");
         cc.setRates("{\"EUR\": 0.92}");
 
-        // When
         CurrencyConvertor saved = repository.save(cc);
         Optional<CurrencyConvertor> found = repository.findById(saved.getId());
 
-        // Then
         assertThat(found).isPresent();
         assertThat(found.get().getCurrency()).isEqualTo("USD");
         assertThat(found.get().getRates()).contains("EUR");
@@ -38,7 +36,7 @@ class CurrencyConvertorRepositoryTest {
     @Test
     @DisplayName("Given a persisted CurrencyConvertor, When deleted, Then it should not be found by ID")
     void givenSavedCurrencyConvertor_whenDeleted_thenItShouldNotExist() {
-        // Given
+
         CurrencyConvertor cc = new CurrencyConvertor();
         cc.setTimestamp(1714741280L);
         cc.setCurrency("GBP");
@@ -47,18 +45,16 @@ class CurrencyConvertorRepositoryTest {
         CurrencyConvertor saved = repository.save(cc);
         Long id = saved.getId();
 
-        // When
         repository.deleteById(id);
         Optional<CurrencyConvertor> deleted = repository.findById(id);
 
-        // Then
         assertThat(deleted).isNotPresent();
     }
 
     @Test
     @DisplayName("Given multiple CurrencyConvertors, When findAll is called, Then it should return all entries")
     void givenMultipleCurrencyConvertors_whenFindAll_thenReturnsAll() {
-        // Given
+
         CurrencyConvertor cc1 = new CurrencyConvertor();
         cc1.setTimestamp(1714741280L);
         cc1.setCurrency("JPY");
@@ -72,10 +68,8 @@ class CurrencyConvertorRepositoryTest {
         repository.save(cc1);
         repository.save(cc2);
 
-        // When
         var all = repository.findAll();
 
-        // Then
         assertThat(all).hasSizeGreaterThanOrEqualTo(2);
     }
 }

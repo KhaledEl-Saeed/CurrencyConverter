@@ -3,11 +3,8 @@ package com.example.CurrencyConverter.service.serviceImpl;
 import com.example.CurrencyConverter.Response.CurrencyResponse;
 import com.example.CurrencyConverter.WebClient.CurrencyApiClient;
 import com.example.CurrencyConverter.service.CurrencyService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
-import java.util.Objects;
 
 @Service
 public class CurrencyServiceImpl implements CurrencyService {
